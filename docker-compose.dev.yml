@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  whatsapp-bot:
+    # Override for development
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Mount source code for development
+      - .:/app
+      - /app/go.mod
+      - /app/go.sum
+      - /app/vendor
+      # Persist WhatsApp session data
+      - whatsapp_data:/app/data
+    environment:
+      - ADMIN_PHONE_NUMBER=${ADMIN_PHONE_NUMBER:-}
+      - SQLITE_DB=/app/data/whatsapp_bot.db
+      - GO_ENV=development
+    # Run in foreground for development
+    stdin_open: true
+    tty: true
+    # Remove restart policy for development
+    restart: "no" 
